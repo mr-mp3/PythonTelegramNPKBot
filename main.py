@@ -1,15 +1,37 @@
+import asyncio
 import logging
-from bot import TelegramBot
 
-# Настройка логирования
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
+from aiogram import Bot, Dispatcher
+from aiogram.client.default import DefaultBotProperties
+from aiogram.enums import ParseMode
+from aiogram.fsm.storage.memory import MemoryStorage
 
-def main():
-    bot = TelegramBot()
-    bot.run()
+from config import BOT_TOKEN
+from handlers import start, help, menu, search, filters, movies
+from services.database import init_db
 
-if __name__ == '__main__':
-    main()
+
+async def main():
+    logging.basicConfig(level=logging.INFO)
+
+    init_db()
+
+    bot = Bot(
+        BOT_TOKEN,
+        default=DefaultBotProperties(parse_mode=ParseMode.HTML)
+    )
+
+    dp = Dispatcher(storage=MemoryStorage())
+
+    dp.include_router(start.router)
+    dp.include_router(help.router)
+    dp.include_router(menu.router)
+    dp.include_router(filters.router)
+    dp.include_router(search.router)
+    dp.include_router(movies.router)
+
+    await dp.start_polling(bot)
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
