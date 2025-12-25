@@ -4,6 +4,7 @@ from aiogram.fsm.context import FSMContext
 
 from utils.states import FilterStates
 from services.database import save_filters, reset_filters
+from keyboards.back import back_keyboard
 
 router = Router()
 
@@ -54,12 +55,12 @@ async def process_rating(message: Message, state: FSMContext):
     await message.answer(
         f"✅ Фильтры сохранены:\n"
         f"📅 Год ≥ {data.get('year')}\n"
-        f"⭐ Рейтинг ≥ {rating}"
+        f"⭐ Рейтинг ≥ {rating}", reply_markup=back_keyboard()
     )
 
 
 @router.callback_query(F.data == "filter_reset")
 async def reset_filters_handler(call: CallbackQuery):
     reset_filters(call.from_user.id)
-    await call.message.edit_text("♻️ Фильтры сброшены")
+    await call.message.edit_text("♻️ Фильтры сброшены", reply_markup=back_keyboard())
     await call.answer()
