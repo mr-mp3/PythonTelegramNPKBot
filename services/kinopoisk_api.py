@@ -49,30 +49,40 @@ def search_movie(query: str, year: int | None = None, rating: float | None = Non
         return None, "❌ Ошибка соединения с Кинопоиском."
 
 
-def get_random_movie():
+def is_valid_movie(movie: dict) -> bool:
+    return (
+        movie
+        and movie.get("name")
+        and movie.get("description")
+        and movie.get("poster", {}).get("url")
+        and movie.get("rating", {}).get("kp")
+    )
+
+
+def get_random_movie(max_attempts: int = 5):
     """
-    Получает случайный фильм
+    Получает случайный КАЧЕСТВЕННЫЙ фильм
     """
-    try:
-        response = requests.get(
-            f"{KINOPOISK_API_URL}/movie/random",
-            headers=HEADERS,
-            timeout=10
-        )
-        response.raise_for_status()
+    for _ in range(max_attempts):
+        try:
+            response = requests.get(
+                f"{KINOPOISK_API_URL}/movie/random",
+                headers=HEADERS,
+                timeout=10
+            )
+            response.raise_for_status()
 
-        movie = response.json()
-        if not movie or "name" not in movie:
-            return None, "❌ Не удалось получить фильм"
+            movie = response.json()
 
-        return movie, None
+            if is_valid_movie(movie):
+                return movie, None
 
-    except ReadTimeout:
-        return None, "⏳ Кинопоиск долго отвечает. Попробуйте ещё раз."
+        except ReadTimeout:
+            return None, "⏳ Кинопоиск долго отвечает. Попробуйте ещё раз."
+        except RequestException:
+            continue
 
-    except RequestException:
-        return None, "❌ Ошибка соединения с Кинопоиском."
-
+    return None, "😕 Не удалось найти хороший случайный фильм. Попробуйте ещё раз."
 
 def get_top_movies(limit: int = 10):
     """
