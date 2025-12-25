@@ -7,6 +7,7 @@ from services.kinopoisk_api import search_movie
 from services.database import get_filters
 from utils.formatters import format_movie
 from utils.states import SearchStates
+from keyboards.back import back_keyboard
 
 router = Router()
 
@@ -35,7 +36,7 @@ async def process_search(message: Message, state: FSMContext):
     text, poster = format_movie(movie)
 
     if poster:
-        await message.answer_photo(poster, caption=text)
+        await message.answer_photo(photo=poster, caption=text)
     else:
         await message.answer(text)
 
