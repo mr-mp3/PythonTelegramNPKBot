@@ -10,9 +10,6 @@ HEADERS = {
 
 
 def search_movie(query: str, year: int | None = None, rating: float | None = None):
-    """
-    Поиск фильма по названию с учётом фильтров
-    """
     try:
         params = {
             "query": query,
@@ -60,9 +57,6 @@ def is_valid_movie(movie: dict) -> bool:
 
 
 def get_random_movie(max_attempts: int = 5):
-    """
-    Получает случайный КАЧЕСТВЕННЫЙ фильм
-    """
     for _ in range(max_attempts):
         try:
             response = requests.get(
@@ -85,9 +79,6 @@ def get_random_movie(max_attempts: int = 5):
     return None, "😕 Не удалось найти хороший случайный фильм. Попробуйте ещё раз."
 
 def get_top_movies(limit: int = 10):
-    """
-    Получает топ фильмов (Top-250)
-    """
     try:
         response = requests.get(
             f"{KINOPOISK_API_URL}/movie",
