@@ -26,14 +26,12 @@ async def top_movies_handler(message: Message):
         title = movie.get("name", "Без названия")
         year = movie.get("year", "—")
 
-        # 🔥 ВАЖНО: ТОЛЬКО ТАК
         rating = format_rating(movie.get("rating", {}).get("kp"))
 
         response += (
             f"{index}. <b>{title}</b> ({year}) — ⭐ {rating}\n"
         )
 
-    # 🔥 ВАЖНО: reply_markup
     await message.answer(
         response,
         reply_markup=back_keyboard()
