@@ -10,8 +10,6 @@ from keyboards.random_retry import random_retry_keyboard
 router = Router()
 
 
-# ====== ТОП ФИЛЬМОВ ======
-
 @router.message(Command("top"))
 async def top_movies_handler(message: Message):
     await message.answer("🏆 Загружаю топ фильмов...")
@@ -42,8 +40,6 @@ async def top_movies_handler(message: Message):
     )
 
 
-# ====== СЛУЧАЙНЫЙ ФИЛЬМ ======
-
 @router.message(Command("random"))
 async def random_movie_handler(message: Message):
     await message.answer("🎲 Ищу случайный фильм...")
@@ -72,7 +68,6 @@ async def random_movie_handler(message: Message):
         )
 
 
-# ====== ПОВТОР СЛУЧАЙНОГО ФИЛЬМА ======
 
 @router.callback_query(F.data == "random_retry")
 async def random_retry(call: CallbackQuery):
